@@ -40,8 +40,7 @@ jobs:
         run: |
           swaggerhub api:create Daemon/pets-test/1.0.0 \
             --file "${{ steps.find_spec.outputs.spec_file }}" \
-            --visibility public \
-            --token ${{ secrets.SWAGGERHUB_API_KEY }}
+            --visibility public
 
       - name: Publish API
         run: |
