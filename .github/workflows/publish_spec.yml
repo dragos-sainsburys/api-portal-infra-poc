@@ -16,6 +16,8 @@ on:
 jobs:
   publish-api:
     runs-on: ubuntu-latest
+    env:
+      SWAGGERHUB_API_KEY: ${{ secrets.SWAGGERHUB_API_KEY }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
