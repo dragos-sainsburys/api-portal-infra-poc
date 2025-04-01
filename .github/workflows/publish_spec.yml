@@ -38,10 +38,10 @@ jobs:
 
       - name: Create API (or overwrite if exists)
         run: |
-          swaggerhub api:create Daemon/pets-test/1.0.0 \
+          swaggerhub api:create daemon-e09/pets-test/1.0.1 \
             --file "${{ steps.find_spec.outputs.spec_file }}" \
             --visibility public
 
       - name: Publish API
         run: |
-          swaggerhub api:publish Daemon/pets-test/1.0.0 -f --token ${{ secrets.SWAGGERHUB_API_KEY }}
+          swaggerhub api:publish daemon-e09/pets-test/1.0.1 -f
