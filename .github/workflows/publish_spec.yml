@@ -1,0 +1,47 @@
+name: Discover and Publish OpenAPI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs: 
+      version:
+        required: false
+        type: string
+
+jobs:
+  publish-api:
+    runs-on: ubuntu-latest
+    env:
+      SWAGGERHUB_API_KEY: ${{ secrets.SWAGGERHUB_API_KEY }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Find OpenAPI spec
+        id: find_spec
+        run: |
+          FILE=$(grep -rlE 'openapi:|swagger:' . --include=\*.{yaml,yml,json} | head -n 1)
+          if [ -z "$FILE" ]; then
+            echo "No OpenAPI spec found."
+            exit 1
+          fi
+          echo "Found OpenAPI spec: $FILE"
+          echo "spec_file=$FILE" >> $GITHUB_OUTPUT
+
+      - name: Install SwaggerHub CLI
+        run: npm install -g swaggerhub-cli
+
+      - name: Create API (or overwrite if exists)
+        run: |
+          swaggerhub api:create daemon-e09/pets-test/1.0.1 \
+            --file "${{ steps.find_spec.outputs.spec_file }}" \
+            --visibility public
+
+      - name: Publish API
+        run: |
+          swaggerhub api:publish daemon-e09/pets-test/1.0.1 -f
