@@ -34,9 +34,12 @@ jobs:
       - name: Install SwaggerHub CLI
         run: npm install -g swaggerhub-cli
 
-      - name: Publish to SwaggerHub
+      - name: Create API (or overwrite if exists)
         run: |
-          swaggerhub api:push myOrg/myApi/1.0.0 \
+          swaggerhub api:create Daemon/pets-test/1.0.0 \
             --file "${{ steps.find_spec.outputs.spec_file }}" \
-            --publish \
-            --token ${{ secrets.SWAGGERHUB_API_KEY }}
+            --visibility public
+
+      - name: Publish API
+        run: |
+          swaggerhub api:publish Daemon/pets-test/1.0.0 -f
